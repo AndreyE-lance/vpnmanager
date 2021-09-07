@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Log in with your account</title>
+    <link th:href="@{/css/style.css}" rel="stylesheet" />
+</head>
+
+<body>
+<div>
+    <p th:if="${save['isVisible']}" th:utext="${save['message']}" th:style="${save['isSuccess']} ? 'color: green' : 'color: red'"></p>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>UserName</th>
+            <th>Password</th>
+            <th>Roles</th>
+        </tr>
+        <tr th:each="user:${allUsers}">
+                <td th:utext="${user['id']}"/></td>
+                <td th:utext="${user['username']}"/></td>
+                <td th:utext="${user['password']}"/></td>
+                <td/>
+                   <p th:each="role:${user['roles']}">
+                        <td th:utext="${role['name']}"/></td>
+                   </p>
+                </td>
+                <td>
+                    <form action="#" th:action="@{/default}" method="post">
+                        <input type="hidden" name="userId" th:value="${user['id']}"/>
+                        <input type="hidden" name="action" value="delete"/>
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+        </tr>
+    </table>
+    <p><a href="/">Главная</a>
+        <a href="/newuser">Добавить</a></p>
+</div>
+</body>
+</html>
