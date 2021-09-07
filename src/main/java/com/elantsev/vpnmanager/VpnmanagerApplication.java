@@ -1,28 +1,42 @@
 package com.elantsev.vpnmanager;
 
 import org.jasypt.util.password.BasicPasswordEncryptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.annotation.processing.Filer;
+import java.io.*;
+import java.nio.file.Path;
 
 @SpringBootApplication
 public class VpnmanagerApplication {
-   
-    public static void main(String[] args) {
-        SpringApplication.run(VpnmanagerApplication.class, args);
 
-       /* BasicPasswordEncryptor bpEnc = new BasicPasswordEncryptor();
-        System.out.println(bpEnc.encryptPassword("321"));*/
+    public static void main(String[] args) throws IOException {
+        SpringApplication.run(VpnmanagerApplication.class, args);
+        changeFileOwner("kirovav","159753");
     }
 
     @Bean
     public BasicPasswordEncryptor basicPasswordEncryptor() {
         return new BasicPasswordEncryptor();
+    }
+
+    public static boolean changeFileOwner(String toUser, String password){
+
+        Process prc = null;
+        try {
+            prc = Runtime.getRuntime().exec("sudo -S chown "+toUser+" /etc/testvpn/vpn.conf");
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(prc.getOutputStream()));
+            bw.write(password+"\n");
+            bw.flush();
+
+            prc = Runtime.getRuntime().exec("ls -l /etc/testvpn/vpn.conf");
+            BufferedReader bReader = new BufferedReader(new InputStreamReader(prc.getInputStream()));
+            if(bReader.readLine().split(" ")[2].equals(toUser)) return true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
