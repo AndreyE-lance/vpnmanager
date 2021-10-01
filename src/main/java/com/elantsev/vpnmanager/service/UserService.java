@@ -75,10 +75,10 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    /*public List<User> usergtList(Long minId){
+    public List<User> usergtList(Long minId){
         return entityManager.createQuery("SELECT u FROM User u WHERE u.id>:paramId", User.class)
                 .setParameter("paramId", minId).getResultList();
-    }*/
+    }
 
     public boolean changeFileOwner(Path path, String toUser, String password){
         Process prc = null;
